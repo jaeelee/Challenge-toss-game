@@ -13,6 +13,10 @@ export const Home: React.FC = () => {
   } = useHome();
 
   return (
+    <>
+    <div className="header">
+      <h1 className="header-logo">LiquidBlocks</h1>
+    </div>
     <div className="home-container">
       {settingsLoaded && (
         <GameSettings
@@ -33,5 +37,6 @@ export const Home: React.FC = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
