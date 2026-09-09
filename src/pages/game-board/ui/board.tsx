@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { COLOR, type GameState, type Puzzle } from "/entities/game";
-import { PuzzleGeneratorAPI } from "/pages/game-board/lib/game-generator";
-import { GameAPI } from "/pages/game-board/lib/game-logic";
-import { clearGame, saveGame } from "/entities/game/model/storage";
-import { isSolved } from "/pages/game-board/lib/game-solver";
-import { DifficultyManager } from "/pages/game-board/lib/difficulty-manager";
-import type { ColorVisibility } from "/pages/game-board/lib/difficulty-manager";
-import { Bottle } from "/pages/game-board/ui/bottle";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { DifficultyManager } from '/pages/game-board/lib/difficulty-manager';
+import type { ColorVisibility } from '/pages/game-board/lib/difficulty-manager';
+import { PuzzleGeneratorAPI } from '/pages/game-board/lib/game-generator';
+import { GameAPI } from '/pages/game-board/lib/game-logic';
+import { isSolved } from '/pages/game-board/lib/game-solver';
+import { Bottle } from '/pages/game-board/ui/bottle';
+
+import { COLOR, type GameState, type Puzzle } from '/entities/game';
+import { clearGame, saveGame } from '/entities/game/model/storage';
 
 export const Board: React.FC<{ bottleHeight?: number; numColors?: number }> = ({
   bottleHeight = 4,
@@ -27,7 +30,7 @@ export const Board: React.FC<{ bottleHeight?: number; numColors?: number }> = ({
     [finalBottleHeight],
   );
 
-  const difficulty = settings?.difficulty ?? "easy";
+  const difficulty = settings?.difficulty ?? 'easy';
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [solved, setSolved] = useState(false);
   const [revealedPositions, setRevealedPositions] = useState<ColorVisibility>(
@@ -52,7 +55,7 @@ export const Board: React.FC<{ bottleHeight?: number; numColors?: number }> = ({
       puzzle,
       bottleHeight: finalBottleHeight,
       numColors: finalNumColors,
-      difficulty: settings?.difficulty || "easy",
+      difficulty: settings?.difficulty || 'easy',
       revealedPositions: {},
     });
     return puzzle;

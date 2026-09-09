@@ -25,7 +25,6 @@ export function getDifficultyConfig(difficulty: Difficulty) {
   return DIFFICULTY_CONFIG[difficulty];
 }
 
-
 export const COLOR = [
   '',
   '#FF0000',

@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import type { Difficulty } from '/entities/game';
 
 // --- Types & Constants ---

@@ -1,24 +1,29 @@
-import React from 'react'
+import React from 'react';
+
 import '/shared/header/ui/header.css';
 
 interface HeaderProps {
-    title: string
-    onBackPress?: () => void
-    showBackButton?: boolean
+  title: string;
+  onBackPress?: () => void;
+  showBackButton?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ title, onBackPress, showBackButton = true }) => {
-    return (
-        <div className="header">
-            <div className="header-content">
-                {showBackButton && onBackPress && (
-                    <button className="back-btn" onClick={onBackPress}>←</button>
-                )}
-                <div className="header-title">{title}</div>
-                <div className="header-right" />
-            </div>
-        </div>
-    )
-}
-
-
+export const Header: React.FC<HeaderProps> = ({
+  title,
+  onBackPress,
+  showBackButton = true,
+}) => {
+  return (
+    <div className="header">
+      <div className="header-content">
+        {showBackButton && onBackPress && (
+          <button className="back-btn" onClick={onBackPress}>
+            ←
+          </button>
+        )}
+        <div className="header-title">{title}</div>
+        <div className="header-right" />
+      </div>
+    </div>
+  );
+};

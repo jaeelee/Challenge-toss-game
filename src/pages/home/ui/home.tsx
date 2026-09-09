@@ -1,6 +1,8 @@
-import React from "react";
-import { useHome } from "/pages/home/lib/hooks";
-import GameSettings from "/shared/picker/picker";
+import React from 'react';
+
+import { useHome } from '/pages/home/lib/hooks';
+
+import GameSettings from '/shared/picker/picker';
 
 export const Home: React.FC = () => {
   const {

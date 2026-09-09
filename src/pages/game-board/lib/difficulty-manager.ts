@@ -35,7 +35,7 @@ export class DifficultyManager {
     difficulty: Difficulty,
     revealedPositions?: ColorVisibility,
   ): VisiblePuzzle {
-    const visibility = {...this.colorVisibility, ...revealedPositions};
+    const visibility = { ...this.colorVisibility, ...revealedPositions };
 
     return {
       bottles: puzzle.map((bottle: Color[], bottleIndex: number) => ({
@@ -61,7 +61,8 @@ export class DifficultyManager {
                   isVisible = true;
                 } else {
                   if (this.initialMediumVisibility[positionKey] === undefined) {
-                    this.initialMediumVisibility[positionKey] = Math.random() > 0.5;
+                    this.initialMediumVisibility[positionKey] =
+                      Math.random() > 0.5;
                   }
                   isVisible = this.initialMediumVisibility[positionKey];
                 }
@@ -107,14 +108,14 @@ export class DifficultyManager {
    * 현재 공개된 색상 정보 가져오기
    */
   getRevealedColors(): ColorVisibility {
-    return {...this.colorVisibility};
+    return { ...this.colorVisibility };
   }
 
   /**
    * 저장된 밝힌 위치 복원 (이어하기 시 사용)
    */
   setRevealedPositions(positions: ColorVisibility): void {
-    this.colorVisibility = {...positions};
+    this.colorVisibility = { ...positions };
   }
 
   /**

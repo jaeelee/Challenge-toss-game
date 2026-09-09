@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+
 import { LIQUID_HEIGHT } from '/pages/game-board/lib/constants';
 
 export interface LiquidColor {
@@ -17,7 +18,7 @@ export const Bottle: React.FC<Props> = React.memo(
   ({ onClick, maxLiquidCount, colors, isSelected }) => {
     return (
       <button
-        className={`bottle ${isSelected ? "bottle-selected" : ""}`}
+        className={`bottle ${isSelected ? 'bottle-selected' : ''}`}
         style={{ height: maxLiquidCount * LIQUID_HEIGHT + 25 }}
         onClick={onClick}
       >
@@ -26,9 +27,11 @@ export const Bottle: React.FC<Props> = React.memo(
           return (
             <div
               key={idx}
-              className={`liquid ${isLast ? "liquid-last" : ""} ${!isVisible ? "liquid-hidden" : ""}`}
+              className={`liquid ${isLast ? 'liquid-last' : ''} ${!isVisible ? 'liquid-hidden' : ''}`}
               style={{
-                backgroundColor: isVisible ? color : "var(--liquid-hidden, #888)",
+                backgroundColor: isVisible
+                  ? color
+                  : 'var(--liquid-hidden, #888)',
                 opacity: isVisible ? 1 : 0.6,
               }}
             />
@@ -36,5 +39,5 @@ export const Bottle: React.FC<Props> = React.memo(
         })}
       </button>
     );
-  }
+  },
 );

@@ -9,13 +9,22 @@ Liquid Blocks (워터 소트 퍼즐) is a Water Sort Puzzle game built with Reac
 ## Commands
 
 ```bash
-yarn dev       # start dev server (vite)
-yarn build     # type-check (tsc -b) then production build
-yarn lint      # eslint .
-yarn preview   # preview production build
+yarn dev          # start dev server (vite)
+yarn build        # type-check (tsc -b) then production build
+yarn lint         # eslint . — code quality
+yarn lint:fsd     # steiger ./src — FSD architecture rules
+yarn format       # prettier --write . — format + sort imports (FSD layer order)
+yarn format:check # prettier --check . — verify formatting in CI
+yarn preview      # preview production build
 ```
 
 There is no test suite configured in this repo.
+
+## Code style (ESLint + Prettier)
+
+Prettier owns formatting (including import order), ESLint owns code quality. They're integrated via `eslint-config-prettier` — `eslint.config.js`'s `extends` array puts it last so it disables any ESLint stylistic rule that could conflict with Prettier's output. Don't add formatting-related ESLint rules (indentation, quotes, etc.); change `.prettierrc` instead.
+
+`.prettierrc` uses `@trivago/prettier-plugin-sort-imports` to auto-sort imports by FSD layer order: `react`/`react-dom` → third-party → `/App`|`/main` → `/pages` → `/widgets` → `/features` → `/entities` → `/shared` → `/assets` → relative. Run `yarn format` after writing new imports rather than hand-ordering them.
 
 ## Import convention (important, enforced by ESLint)
 
@@ -31,6 +40,7 @@ import { Board } from '../game-board/ui/board';
 ```
 
 This works via two matching configs that must stay in sync:
+
 - `vite.config.ts` — a regex alias that rewrites `/entities`, `/pages`, `/shared`, `/assets`, `/App.css`, `/main.tsx`, `/App` to `src/...` (careful to exclude real filesystem absolute paths).
 - `tsconfig.app.json` — `paths: { "/*": ["./*"] }` with `baseUrl: "src"`.
 
@@ -40,7 +50,14 @@ Note: `src/pages/home/index.tsx` currently uses relative imports (`./ui/home`, `
 
 ## Architecture
 
-Feature-sliced-ish layout under `src/`:
+This project follows **Feature-Sliced Design (FSD)**. Full conventions live in `docs/conventions/fsd.md`; the rules you must not break:
+
+- **Layers** (`app` → `pages` → `widgets` → `features` → `entities` → `shared`): a layer may only import from layers _below_ it, never above, and never cross-import another slice on the same layer. Present layers here: `pages`, `entities`, `shared` (+ `app` role in `App.tsx`/`main.tsx`).
+- **Public API**: import a slice only through its `index.ts`, never a deep internal path. Use `import { saveGame } from '/entities/game'`, not `'/entities/game/model/storage'`. (This is the most-violated rule — see below.)
+- **Import paths**: absolute `/`-rooted only (enforced by ESLint `no-restricted-imports`); keep `vite.config.ts` alias regex and `tsconfig.app.json` paths in sync.
+- **Verify** with `yarn lint:fsd` (Steiger, config in `steiger.config.ts`) alongside `yarn lint`/`yarn build`, or run the `/check-fsd` command. There is a known baseline of ~10 pre-existing FSD violations documented in `docs/conventions/fsd.md` §7 — don't add new ones; reduce them when you touch nearby code.
+
+Layout under `src/`:
 
 - **`entities/game/`** — core domain: `model/types.ts` (`Puzzle`/`Bottle`/`Color`/`GameState`/`Difficulty`), `model/storage.ts` (localStorage persistence of the in-progress game under key `current_game`), `lib/constants.ts` (`DIFFICULTY_CONFIG`, `COLOR` palette). Re-exported via `entities/game/index.ts`.
 - **`pages/home/`** — landing page; `lib/hooks.ts` handles new-game / continue-game flow, navigating to `/game` with puzzle + settings passed via router `location.state`.
@@ -55,3 +72,16 @@ Feature-sliced-ish layout under `src/`:
 State flow: `Home` builds a `Puzzle`/`GameState` and navigates to `/game` passing `{ game, settings, revealedPositions }` in router state; `Board` reads that state (falling back to generating a new puzzle via `PuzzleGeneratorAPI` if none was passed), drives moves through `GameAPI`, tracks per-move visibility via `DifficultyManager`, and persists progress via `saveGame`/`clearGame` (`entities/game/model/storage.ts`).
 
 Routing is defined in `src/App.tsx`: `/` → `Home`, `/game` → `Board`.
+
+## Agents (subagents)
+
+This repo defines a small roster of project-specific subagents, mirrored for both Claude Code and Codex CLI so either tool can delegate to the same personas. Codex is optional — if it isn't installed, `.codex/` is simply never read and Claude Code's roster works standalone.
+
+| Agent           | When to use                                                                                 | Claude Code                       | Codex CLI                          |
+| --------------- | ------------------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------- |
+| `game-logic`    | Puzzle rules/algorithms: moving liquid, generation, solvability, difficulty visibility      | `.claude/agents/game-logic.md`    | `.codex/agents/game-logic.toml`    |
+| `frontend-ui`   | React components, CSS, animation, the drum-roll picker                                      | `.claude/agents/frontend-ui.md`   | `.codex/agents/frontend-ui.toml`   |
+| `test-engineer` | Bootstrapping Vitest and writing tests (repo currently has none)                            | `.claude/agents/test-engineer.md` | `.codex/agents/test-engineer.toml` |
+| `code-reviewer` | Read-only review of a diff against this file's conventions (imports, alias sync, dead code) | `.claude/agents/code-reviewer.md` | `.codex/agents/code-reviewer.toml` |
+
+Each pair shares the same natural-language instructions — only the file format differs (YAML frontmatter + Markdown body for Claude, TOML `developer_instructions` for Codex). When updating an agent's behavior, edit both files together to avoid drift between the two tools.

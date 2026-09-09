@@ -1,7 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "/App.css";
-import { Home } from "/pages/home";
-import { Board } from "/pages/game-board";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import '/App.css';
+
+import { Board } from '/pages/game-board';
+import { Home } from '/pages/home';
 
 function App() {
   return (

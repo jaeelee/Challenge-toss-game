@@ -199,8 +199,6 @@
 //     return null;
 // }
 
-
-
 // // 해결책을 단계별로 출력하는 함수
 // function printSolution(moves: Move[] | null): void {
 //     if (!moves) {
