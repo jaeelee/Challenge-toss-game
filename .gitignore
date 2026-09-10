@@ -32,5 +32,6 @@ package-lock.json
 # ai
 # .claude
 .claude/settings.local.json
+.claude/plans/*
 # AGENTS.md
 # CLAUDE.md
