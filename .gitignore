@@ -13,6 +13,10 @@ dist-ssr
 .yarn/install-state.gz
 *.local
 
+# This project uses Yarn Berry (see .yarnrc.yml) — an npm-generated lockfile
+# means `npm install` was run by mistake and corrupts dependency resolution.
+package-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

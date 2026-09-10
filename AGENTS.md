@@ -48,6 +48,16 @@ If you add a new top-level directory under `src/` (alongside `entities`, `pages`
 
 Note: `src/pages/home/index.tsx` currently uses relative imports (`./ui/home`, `../../assets/...`) — this is a pre-existing inconsistency, not the pattern to follow for new code.
 
+## Git workflow
+
+Full rules live in `docs/conventions/git.md`. Summary:
+
+- **Branching**: lightweight Git Flow — `main` (stable) + `develop` (integration, default PR target) + short-lived `feat/<slug>` / `fix/<slug>` / `hotfix/<slug>` / `chore/<slug>` branches. No `release/*` branches at this project's scale.
+- **Commits**: [Conventional Commits](https://www.conventionalcommits.org/ko/v1.0.0/) + a mandatory issue key — `[LIQB_<n>] <type>[(<scope>)]: <description>` (e.g. `[LIQB_1] feat: 힌트 기능 추가`). Types restricted to `feat`/`fix`/`docs`/`style`/`refactor`/`perf`/`test`/`build`/`ci`/`chore`/`revert`. Korean descriptions are fine (`subject-case` is disabled); the `[LIQB_n]` prefix and `<type>:` are not optional.
+- **Issue tracking**: GitHub Issues, no separate tracker. Open an issue first, reuse its auto-incrementing number as the `LIQB_<n>` in commits/branches (e.g. issue #1 → `[LIQB_1]`, branch `feat/LIQB_1-hint-system`).
+- **Enforced** by `commitlint` (custom `parserPreset` + a local `issue-format` rule validating `LIQB_\d+`) + `husky` hooks — `commit-msg` rejects malformed messages, `pre-commit` runs `lint-staged` (ESLint --fix + Prettier) on staged files. Both auto-install via the `prepare` script on `yarn install`.
+- Pre-convention history (commits before `992c1d3`) isn't retroactively held to this rule.
+
 ## Architecture
 
 This project follows **Feature-Sliced Design (FSD)**. Full conventions live in `docs/conventions/fsd.md`; the rules you must not break:

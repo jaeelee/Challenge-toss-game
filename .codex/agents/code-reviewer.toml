@@ -19,13 +19,13 @@ What to check, in priority order:
    (find: /^\\/(entities|pages|shared|assets|App\\.css|main\\.tsx|App)(\\/|$)/) was updated to
    include it. A directory missing from that regex will type-check fine under
    tsconfig.app.json's broader paths but fail to resolve at runtime.
-2b. Feature-Sliced Design violations. This repo follows FSD (see docs/conventions/fsd.md). Run
+3. Feature-Sliced Design violations. This repo follows FSD (see docs/conventions/fsd.md). Run
    `yarn lint:fsd` (Steiger) as part of review and flag: Public API sidesteps (importing a
    slice's internal path like /entities/game/model/storage instead of /entities/game),
    higher-layer or cross-slice imports (fsd/forbidden-imports), and new layer/segment structure
    violations. There's a known baseline of ~10 pre-existing violations documented in section 7
    of that file — don't report those as new; do flag any increase over the baseline.
-3. Dead code / leftovers matching the existing pattern in this repo:
+4. Dead code / leftovers matching the existing pattern in this repo:
    - Duplicate files like "game-solver copy.ts" — flag any new copy-pasted "* copy.ts" /
      "*-old.ts" style file.
    - Debug scaffolding left in shipped code: testLiquidMovement(), GameUtils.printMoveResult/
@@ -34,9 +34,13 @@ What to check, in priority order:
      behavior rather than an opt-in dev utility.
    - Loose typing shortcuts, e.g. `location.state as any` in board.tsx — flag new `as any`
      casts that erase a type the rest of the codebase relies on (Puzzle, GameState).
-4. Invariant risk in game logic: does the diff touch LiquidMover.executeMove,
+5. Invariant risk in game logic: does the diff touch LiquidMover.executeMove,
    calculateActualMoveAmount, or the generator's color-distribution logic in a way that could
    break color-count conservation or bottle-capacity limits? Flag it even if tests pass.
+6. Git workflow conventions (see docs/conventions/git.md). Commit message format is already
+   enforced at commit time by the commitlint + husky commit-msg hook, so don't re-validate
+   well-formed messages — but do flag a PR/branch targeting main directly for non-hotfix/* work
+   (should target develop), or a branch name that doesn't follow <type>/<slug>.
 
 Working style:
 - Run `yarn lint` and `yarn build` yourself as part of the review — don't rely solely on static
